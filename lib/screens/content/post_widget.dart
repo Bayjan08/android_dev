@@ -1,10 +1,17 @@
+import "package:android_dev/screens/home_screen/models/post_model.dart";
 import "package:flutter/material.dart";
 
-class PostWidget extends StatelessWidget {
-  const new({super.key});
+class PostWidget extends StatefulWidget {
+  final PostModel? post;
+  const PostWidget({super.key,required this.post});
 
-  final bool isLiked = false; // This should ideally be managed by state management
+  @override
+  State<PostWidget> createState() => _PostWidgetState();
+}
 
+class _PostWidgetState extends State<PostWidget> {
+  final bool isLiked = false; 
+ // This should ideally be managed by state management
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -26,7 +33,7 @@ class PostWidget extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
             child: Image.network(
-              'https://resizing.flixster.com/U076S5x8rmvSFcRD5BxMjQTrHuo=/fit-in/352x330/v2/https://resizing.flixster.com/qtzRqvpYhbreZCEQm2cShNXdKLg=/ems.cHJkLWVtcy1hc3NldHMvY2VsZWJyaXRpZXMvYjU5OWMzMzAtZDdiZS00MzdjLWFlMTAtMjUxMzkxZGYyNWE3LmpwZw==',
+              widget.post?.imageUrl ?? 'https://via.placeholder.com/150',
               width: double.infinity,
               fit: BoxFit.cover,
             ),
@@ -34,8 +41,17 @@ class PostWidget extends StatelessWidget {
           Row(
             children: [
               IconButton(
-                icon: const Icon(Icons.favorite_border),
-                onPressed: () {},
+                icon: Icon(isLiked ? Icons.favorite : Icons.favorite_border),
+                onPressed: () {
+                  setState(() {
+                    // This should ideally update the like count in a state management solution
+                    if (isLiked) {
+                      widget.post?.addLike((widget.post?.likeCount ?? 1) - 1);
+                    } else {
+                      widget.post?.addLike((widget.post?.likeCount ?? 0) + 1);
+                    }
+                  });
+                },
               ),
               IconButton(
                 icon: const Icon(Icons.comment),
@@ -53,7 +69,7 @@ class PostWidget extends StatelessWidget {
             ],
           ),
           Text(
-            'This is a sample post description. It can be quite long and will wrap to the next line if necessary.',
+            widget.post?.description ?? '',
             style: const TextStyle(fontSize: 16.0),
           ),
 
