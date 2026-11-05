@@ -12,6 +12,22 @@ class PostWidget extends StatefulWidget {
 class _PostWidgetState extends State<PostWidget> {
   final bool isLiked = false; 
  // This should ideally be managed by state management
+
+ void openBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 200,
+          color: Colors.white,
+          child: Center(
+            child: Text('Bottom Sheet Content'),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -55,7 +71,9 @@ class _PostWidgetState extends State<PostWidget> {
               ),
               IconButton(
                 icon: const Icon(Icons.comment),
-                onPressed: () {},
+                onPressed: () {
+                  openBottomSheet();
+                },
               ),
               IconButton(
                 icon: const Icon(Icons.share),
