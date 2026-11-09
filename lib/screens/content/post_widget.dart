@@ -1,3 +1,4 @@
+import "package:android_dev/screens/content/comments_sheet.dart";
 import "package:android_dev/screens/home_screen/models/post_model.dart";
 import "package:flutter/material.dart";
 
@@ -10,21 +11,18 @@ class PostWidget extends StatefulWidget {
 }
 
 class _PostWidgetState extends State<PostWidget> {
-  final bool isLiked = false; 
- // This should ideally be managed by state management
+  bool isLiked = false;
 
  void openBottomSheet() {
+    final post = widget.post;
+    if (post == null) return;
     showModalBottomSheet(
       context: context,
-      builder: (BuildContext context) {
-        return Container(
-          height: 200,
-          color: Colors.white,
-          child: Center(
-            child: Text('Bottom Sheet Content'),
-          ),
-        );
-      },
+      isScrollControlled: true,
+      builder: (_) => CommentsSheet(
+        post: post,
+        onChanged: () => setState(() {}),
+      ),
     );
   }
 
@@ -60,12 +58,12 @@ class _PostWidgetState extends State<PostWidget> {
                 icon: Icon(isLiked ? Icons.favorite : Icons.favorite_border),
                 onPressed: () {
                   setState(() {
-                    // This should ideally update the like count in a state management solution
                     if (isLiked) {
                       widget.post?.addLike((widget.post?.likeCount ?? 1) - 1);
                     } else {
                       widget.post?.addLike((widget.post?.likeCount ?? 0) + 1);
                     }
+                    isLiked = !isLiked;
                   });
                 },
               ),
@@ -85,6 +83,16 @@ class _PostWidgetState extends State<PostWidget> {
                 onPressed: () {},
               ),
             ],
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Text(
+                '${widget.post?.likeCount ?? 0} likes · ${widget.post?.commentCount ?? 0} comments',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
           ),
           Text(
             widget.post?.description ?? '',
